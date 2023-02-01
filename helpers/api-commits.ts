@@ -1,4 +1,6 @@
-export const getCommits = async (): Promise<never[]> => {
+import CommitDto from "./dtos/commit-dto";
+
+export const getCommits = async () => {
 	const response = await fetch(
 		`https://api.github.com/repos/${process.env.user}/${process.env.repo}/commits`,
 		{
@@ -11,7 +13,13 @@ export const getCommits = async (): Promise<never[]> => {
 	)
 		.then(async (response) => {
 			if (response.ok) {
-				return response.json();
+				const data = await response.json();
+
+				const commits: any = data.map((it: any) => {
+					return new CommitDto(it);
+				});
+
+				return commits;
 			}
 			const data = await response.json();
 

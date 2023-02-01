@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import type { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { getCommits } from "@/helpers/api-commits";
 import CommitCard from "@/components/CommitCard";
 import Button from "@/components/Button";
+import { ICommit } from "@/interfaces/card.interface";
 
-export default function Home({
-	commitList,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ commitListJSON }: any) {
 	const [commits, setCommits] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 
+	const commitList = JSON.parse(commitListJSON);
+
 	useEffect(() => {
 		setCommits(commitList);
-	}, [commitList]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const refreshCommits = async () => {
 		setLoading(true);
@@ -42,8 +43,8 @@ export default function Home({
 					{isLoading ? "Loading..." : "Refresh"}
 				</Button>
 				<ul className="list-none">
-					{commits.map((commit: any) => (
-						<CommitCard key={commit.url} commit={commit} />
+					{commits.map((commit: ICommit, i) => (
+						<CommitCard key={i} commit={commit} />
 					))}
 				</ul>
 			</main>
@@ -52,9 +53,12 @@ export default function Home({
 }
 
 export async function getStaticProps() {
-	const commitList = await getCommits();
+	const res = await getCommits();
+
+	const commitListJSON = JSON.stringify(res);
+
 	return {
-		props: { commitList },
+		props: { commitListJSON },
 		revalidate: 60,
 	};
 }
