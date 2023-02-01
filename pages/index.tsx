@@ -1,6 +1,7 @@
+import { getCommits } from "@/helpers/api-commits";
 import Head from "next/head";
 
-export default function Home() {
+export default function Home({ commitList }: any) {
 	return (
 		<>
 			<Head>
@@ -12,4 +13,12 @@ export default function Home() {
 			<main></main>
 		</>
 	);
+}
+
+export async function getStaticProps() {
+	const commitList = await getCommits();
+	return {
+		props: { commitList },
+		revalidate: 2,
+	};
 }

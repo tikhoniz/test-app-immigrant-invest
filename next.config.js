@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+	reactStrictMode: true,
+	env: {
+		localhost: "http://localhost:3000",
+		repo: "test-app-immigrant-invest",
+		user: "tikhoniz",
+		gitUserToken: process.env.GIT_USER_TOKEN,
+	},
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
