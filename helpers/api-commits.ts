@@ -1,4 +1,4 @@
-export const getCommits = async () => {
+export const getCommits = async (): Promise<never[]> => {
 	const response = await fetch(
 		`https://api.github.com/repos/${process.env.user}/${process.env.repo}/commits`,
 		{

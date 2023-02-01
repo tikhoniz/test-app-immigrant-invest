@@ -1,8 +1,12 @@
-import { getCommits } from "@/helpers/api-commits";
-import Head from "next/head";
 import { useEffect, useState } from "react";
+import type { InferGetStaticPropsType } from "next";
+import Head from "next/head";
+import { getCommits } from "@/helpers/api-commits";
+import CommitCard from "@/components/CommitCard";
 
-export default function Home({ commitList }: any) {
+export default function Home({
+	commitList,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
 	const [commits, setCommits] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 
@@ -29,7 +33,7 @@ export default function Home({ commitList }: any) {
 			</Head>
 			<main>
 				{commits.map((commit: any) => (
-					<p key={commit.url}>{commit.url}</p>
+					<CommitCard key={commit.url} commit={commit} />
 				))}
 				<button onClick={refreshCommits} disabled={isLoading}>
 					{isLoading ? "Loading..." : "Refresh"}
@@ -43,6 +47,6 @@ export async function getStaticProps() {
 	const commitList = await getCommits();
 	return {
 		props: { commitList },
-		revalidate: 10 * 60,
+		revalidate: 60,
 	};
 }
