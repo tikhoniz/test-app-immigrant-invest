@@ -3,6 +3,7 @@ import type { InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { getCommits } from "@/helpers/api-commits";
 import CommitCard from "@/components/CommitCard";
+import Button from "@/components/Button";
 
 export default function Home({
 	commitList,
@@ -31,13 +32,20 @@ export default function Home({
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main>
-				{commits.map((commit: any) => (
-					<CommitCard key={commit.url} commit={commit} />
-				))}
-				<button onClick={refreshCommits} disabled={isLoading}>
+			<main className="flex items-center flex-col p-10 h-screen w-screen">
+				<h2 className="text-4xl font-bold">
+					In repository{" "}
+					<span className="text-blue-600">{process.env.repo}</span>
+				</h2>
+				<h2 className="text-6xl font-bold">{commits.length} commits</h2>
+				<Button onClickHandler={refreshCommits} disabled={isLoading}>
 					{isLoading ? "Loading..." : "Refresh"}
-				</button>
+				</Button>
+				<ul className="list-none">
+					{commits.map((commit: any) => (
+						<CommitCard key={commit.url} commit={commit} />
+					))}
+				</ul>
 			</main>
 		</>
 	);
