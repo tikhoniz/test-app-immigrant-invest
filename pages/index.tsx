@@ -1,7 +1,24 @@
 import { getCommits } from "@/helpers/api-commits";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 export default function Home({ commitList }: any) {
+	const [commits, setCommits] = useState([]);
+	const [isLoading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setCommits(commitList);
+	}, [commitList]);
+
+	const refreshCommits = async () => {
+		setLoading(true);
+
+		const commitList = await getCommits();
+
+		setCommits(commitList);
+		setLoading(false);
+	};
+
 	return (
 		<>
 			<Head>
@@ -10,7 +27,14 @@ export default function Home({ commitList }: any) {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main></main>
+			<main>
+				{commits.map((commit: any) => (
+					<p key={commit.url}>{commit.url}</p>
+				))}
+				<button onClick={refreshCommits} disabled={isLoading}>
+					{isLoading ? "Loading..." : "Refresh"}
+				</button>
+			</main>
 		</>
 	);
 }
@@ -19,6 +43,6 @@ export async function getStaticProps() {
 	const commitList = await getCommits();
 	return {
 		props: { commitList },
-		revalidate: 2,
+		revalidate: 10 * 60,
 	};
 }
